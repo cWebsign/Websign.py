@@ -1,3 +1,10 @@
+"""
+    [ Websign PoC ]
+
+    @author: algo1337
+    @since: 1/27/2025
+    @description: this is a proof of concept on how websign works on constructing web templates
+"""
 from .websign import *
 from flask import Flask
 
