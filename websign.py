@@ -71,20 +71,23 @@ def ConstructCSS(css: list):
 
 def ConstructTemplate(controls: list[Control], styles: list[CSS]) -> str:
     template = "<html>\n"
-
+    
     if controls[0].Tag == ControlTag.HEAD_TAG:
         template += ConstructParent(controls[0], 0)
-        template += ConstructCSS(styles)
+        if styles != None:
+            template += ConstructCSS(styles)
 
-    i = 0
-    for control in controls:
-        template += ConstructParent(control, 0)
-        i += 1
+    
+    for i in range(0, len(controls)):
+        if controls[0].Tag == ControlTag.HEAD_TAG and i == 0: continue
+        template += ConstructParent(controls[i], 0)
 
     template += "</html>\n\n"
 
+    return template
+
 def ConstructParent(control: Control, sub: int):
-    resp = f"<{control.Tag.name}"
+    resp = f"<{control.Tag.name.lower().replace('_tag', '')}"
 
     if sub == 0:
         if control.ID:
@@ -110,7 +113,7 @@ def ConstructParent(control: Control, sub: int):
         if control.OnClick or control.FormID:
             pass
 
-        resp += f"{control.Tag.name}>\n"
+        resp += f">\n"
 
     if control.Text:
         resp += control.Text
@@ -119,7 +122,7 @@ def ConstructParent(control: Control, sub: int):
     
     if control.SubControls:
         for c in control.SubControls:
-            resp += f"<{c.Tag.name}"
+            resp += f"<{c.Tag.name.lower().replace('_tag', '')}"
 
             if c.ID:
                 resp += f"id=\"{c.ID}\" "
@@ -144,7 +147,7 @@ def ConstructParent(control: Control, sub: int):
             if c.OnClick or c.FormID:
                 pass
 
-            resp += f"{c.Tag.name}>\n"
+            resp += f">\n"
 
             if c.Text:
                 resp += c.Text
@@ -152,5 +155,8 @@ def ConstructParent(control: Control, sub: int):
             if c.SubControls:
                 resp += ConstructParent(c, 1)
 
-    resp += f"</{control.Tag.name}>"
+            resp += f"</{c.Tag.name.lower().replace('_tag', '')}>\n"
 
+    resp += f"</{control.Tag.name.lower().replace('_tag', '')}>\n"
+
+    return resp
